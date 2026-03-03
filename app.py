@@ -7,7 +7,6 @@ st.set_page_config(page_title="Yield Curve Builder", layout="wide")
 st.title("UK Gilt Yield Curve Builder & Analyser")
 st.caption("Cubic spline interpolation with spread and forward rate analysis")
 
-# --- Let user override yields in sidebar ---
 st.sidebar.header("Gilt Yields (%)")
 default_mats, default_ylds = get_gilt_data()
 
@@ -17,10 +16,8 @@ for i, mat in enumerate(default_mats):
     val = st.sidebar.number_input(label, value=default_ylds[i], step=0.05, format="%.2f")
     user_yields.append(val)
 
-# --- Interpolate ---
 smooth_mats, smooth_yields, cs = interpolate_curve(default_mats, user_yields)
 
-# --- Curve plot ---
 st.subheader("Yield Curve")
 fig, ax = plt.subplots(figsize=(10, 5))
 ax.plot(smooth_mats, smooth_yields, linewidth=2, label="Interpolated Curve")
@@ -31,7 +28,6 @@ ax.legend()
 ax.grid(True, alpha=0.3)
 st.pyplot(fig)
 
-# --- Spreads ---
 st.subheader("Key Spreads")
 col1, col2, col3 = st.columns(3)
 
@@ -51,7 +47,6 @@ with col3:
     st.metric("5s30s Spread", f"{spread_5s30s:.1f} bps")
     st.caption(f"5Y: {y5:.2f}% | 30Y: {y30:.2f}%")
 
-# --- Curve shape interpretation ---
 st.subheader("Curve Shape")
 if spread_2s10s > 50:
     st.success("Steep curve — market expects rate hikes or higher growth/inflation ahead.")
@@ -62,7 +57,6 @@ elif spread_2s10s > -50:
 else:
     st.error("Deeply inverted — historically a strong recession signal.")
 
-# --- Forward rates ---
 st.subheader("Implied Forward Rates")
 col4, col5 = st.columns(2)
 
